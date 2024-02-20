@@ -43,7 +43,7 @@ Me llamo David Leiva y soy profesor Agregado (Contratado Doctor) en el Departame
 
 ## Preparación previa
 
-Por favor, asegúrate que tienes al menos la versión 4.1 de R instalada &mdash; *y preferiblemente la versión 4.2* &mdash; (pues dependiendo de los paquetes que se utilicen requieren versiones actualizadas del software). Nótese que R y RStudio son dos programas distintos: no es suficiente tener actualizada la versión de RStudio pues R se va actualizando independientemente de forma periódica.
+Por favor, asegúrate que tienes al menos la versión 4.2 de R instalada &mdash; *y preferiblemente la versión 4.3* &mdash; (pues dependiendo de los paquetes que se utilicen requieren versiones actualizadas del software). Nótese que R y RStudio son dos programas distintos: no es suficiente tener actualizada la versión de RStudio pues R se va actualizando independientemente de forma periódica.
 
 Para comprobar la versión de R instalada, puedes ejecutar
 
@@ -53,7 +53,7 @@ version
 
 en R y leer en el apartado `version.string` (o las secciones `major` y `minor`).
 
-Si la versión instalada de R es < 4.1.0, necesitarás actualizar el programa previa descarga e instalación. Para descargar R ve a la página [CRAN Download](https://cran.r-project.org/) y selececciona el enlace apropiado según tu sistema operativo:
+Si la versión instalada de R es < 4.2.0, necesitarás actualizar el programa previa descarga e instalación. Para descargar R ve a la página [CRAN Download](https://cran.r-project.org/) y selececciona el enlace apropiado según tu sistema operativo:
 
 * [Windows](https://cran.r-project.org/bin/windows/)
 * [MacOS X](https://cran.r-project.org/bin/macosx/)
