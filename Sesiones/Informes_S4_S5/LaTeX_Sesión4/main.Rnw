@@ -1,0 +1,31 @@
+\documentclass{article}
+
+\begin{document}
+
+<<echo=FALSE,message=FALSE,warning=FALSE>>=
+library(knitr)
+library(tidyverse)
+opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, comment='', 
+               fig.width=8, fig.height=8, digits=6)
+@
+
+\section{Análisis de la base de datos \texttt{mpg}}
+
+
+<<include=FALSE>>=
+data(mpg)
+variables <- colnames(mpg)[sapply(mpg,is.numeric)]
+variables <- variables[variables!='year']
+matvars <- outer(variables,variables,"paste")
+variables <- matvars[upper.tri(matvars)]
+out <- NULL
+
+for (i in 1:length(variables)){
+  out <- c(out, c(knit_child("00_Plantilla.Rnw")))
+  out <-  c(out, knit_child('01_Plantilla.Rnw'))
+  }
+@
+
+\Sexpr{paste(out, collapse = '\n')}
+
+\end{document}

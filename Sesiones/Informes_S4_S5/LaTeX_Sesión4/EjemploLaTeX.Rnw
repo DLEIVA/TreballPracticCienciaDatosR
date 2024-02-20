@@ -1,0 +1,90 @@
+\documentclass{article}
+\usepackage{blindtext}
+\usepackage{multicol}
+%\usepackage{enumitem}
+
+\usepackage[spanish]{babel}
+\usepackage[T1]{fontenc}
+
+\usepackage{geometry}
+ \geometry{
+ a4paper,
+ total={170mm,257mm},
+ left=20mm,
+ top=20mm,
+ }
+ 
+\renewcommand{\refname}{Referencias}
+
+\renewcommand{\tablename}{Tabla}
+
+\renewcommand{\partname}{Bloque}
+
+
+\title{Ejemplo}
+\author{David Leiva}
+\date{\Sexpr{format(Sys.Date(),"%d %B, %Y")}}
+
+\begin{document}
+\maketitle
+
+Podemos insertar fórmulas dentro del texto, por ejemplo, \(\beta\)... 
+
+\begin{eqnarray}
+\bar x = \frac{\sum_{i=1}^n x_i}{n}
+\end{eqnarray}
+
+\begin{itemize}
+\item Primer elemento de la lista
+\item Segundo elemento de la lista
+\item ...
+\end{itemize}
+
+
+\begin{table}[t]
+\caption{Este es un ejemplo de una tabla simple en Latex.}
+
+\begin{tabular}{l | c c}
+\hline
+\bf{Observación} & \bf{Var1} & \bf{Var2} \\
+\hline
+Individuo 1 & a & b \\
+Individuo 2 & c & d \\
+Individuo 3 & e & f \\
+Individuo 4 & g & h \\
+\hline
+\end{tabular}
+
+\end{table}
+
+
+\begin{figure}[h!]
+\caption{Un ejemplo de figura en LaTeX.}
+
+\includegraphics[scale=0.8]{ARCHIVO.jpg}
+\scriptsize{Fuente: D. Leiva 2023}
+\end{figure}
+
+
+<< >>=
+# CÓDIGO DE R
+@
+
+
+\begin{enumerate}
+\item Primer elemento de la lista numerada
+\item Segundo elemento de la lista numerada
+\item ...
+\end{enumerate}
+
+\begin{multicols}{2}
+[
+\section{Sección primera}
+Algún texto aleatorio...
+]
+\blindtext\blindtext
+\end{multicols}
+
+\end{document}
+
+

@@ -1,0 +1,43 @@
+---
+title: "Descripción Movilidad"
+author: "David Leiva"
+date: "2023-07-16"
+output: html_document
+params:
+  c_count : ""
+---
+
+```{r include = FALSE}
+library(ggplot2)
+library(dplyr)
+pais <- datos |> filter(COUNTRY_REGION == params$c_count)
+```
+
+# Series temporales de movilidad para `r params$c_count`
+
+
+```{r echo=FALSE}
+vars <- paste0(c('RETAIL_AND_RECREATION','GROCERY_AND_PHARMACY','PARKS','TRANSIT_STATIONS','WORKPLACES','RESIDENTIAL'),'_PCT')
+
+datos.m <- pais |> 
+  group_by(DAY_CT) |> 
+  summarise(across(vars, mean))
+
+df <- datos.m |>
+  select(DAY_CT, RETAIL_AND_RECREATION_PCT:RESIDENTIAL_PCT) |>
+  gather(key = "variable", value = "Porcentaje", -DAY_CT)
+
+ggplot(df, aes(x = DAY_CT, y = Porcentaje)) + 
+  geom_line(aes(color = variable, linetype = variable)) +
+  theme_minimal() +
+  theme(legend.position="bottom",legend.text=element_text(size=6))
+```
+
+```{r echo=FALSE,warning=FALSE,results='asis'}
+modelos <- paste0("Mod", 1:3)
+for(i in 1:3) {
+  assign(modelos[i], lm(as.formula(paste0(vars[i],'~DAY_CT')),data=datos.m))
+}
+stargazer::stargazer(Mod1,Mod2,Mod3,type='html',column.labels =c('Ocio','Farmacia/Comida','Parque'),column.separate = c(1, 1,1))
+```
+

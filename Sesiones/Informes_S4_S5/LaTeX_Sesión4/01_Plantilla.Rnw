@@ -1,0 +1,30 @@
+
+<<>>=
+new.dat <- mpg %>% select(manufacturer,str_split(variables[i],' ')[[1]])
+@
+
+
+\subsubsection{Diagrama de dispersión para muestra total}
+
+<<>>=
+vars <- str_split(variables[i],' ')[[1]]
+ggplot(new.dat, aes_string(vars[1], vars[2])) +
+  geom_point() +
+  geom_smooth(se = FALSE) +
+  ggtitle('Muestra total')
+@
+
+\subsubsection{Diagrama de dispersión por fabricante}
+
+<<>>=
+for(k in unique(mpg$manufacturer)){
+  filtered.newdat <- new.dat %>% filter(manufacturer==k)
+  p <- ggplot(filtered.newdat, aes_string(vars[1], vars[2])) +
+    geom_point() +
+    geom_smooth(se = FALSE) +
+    ggtitle(paste('Fabricante:',k))
+  print(p)
+}
+@
+
+

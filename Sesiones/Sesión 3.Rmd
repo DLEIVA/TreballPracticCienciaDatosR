@@ -1,0 +1,520 @@
+---
+title: "Ciencia de datos con R: Sesión 3"
+author: "David Leiva"
+date: "2023-07-19"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# MODELO REGRESIÓN LINEAL SIMPLE
+
+```{r}
+Prestigio <- read.csv('data/Prestigio.csv',header=TRUE,stringsAsFactors = TRUE)
+```
+
+Ajuste del modelo: $prestigio_i= \beta_0 + \beta_1ingresos_i + \epsilon$.
+
+Visualicemos la distribución conjunta:
+
+```{r}
+plot(Prestigio[c('ingresos','prestigio')],pch=16)
+```
+
+
+Se utiliza la función `lm()`:
+
+```{r}
+mod1 <- lm(prestigio~ingresos,data=Prestigio)
+```
+
+En este caso, notad que se utiliza un objeto de tipo fórmula: $Y\sim X$ (se lee Y es función de X).
+
+Para obtener el resumen del modelo así como algunos contrastes se puede utilizar el método `summary()` aplicado sobre el objeto de tipo `lm`:
+
+```{r}
+summary(mod1)
+```
+Interpretación de los coeficientes:
+
+ - Intercepto: cuando el nivel de ingresos es 0 se espera que el prestigio social sea igual a 27.14 puntos.
+ - Efecto de ingresos (pendiente recta de regresión): al incrementar en una unidad el nivel de ingresos, el prestigio aumenta en 0.002897 unidades.
+
+
+Nótese que cada término tiene un contraste parcial (t) asociado: $H_0:\beta_i=0;  i=0,1.$. Recordad que el contraste en el modelo de regresión lineal simple es $t=\frac{b_i}{EE(b_i)} \sim t_{n-2}$.
+
+Podemos obtener intervalos de confianza para los coeficientes: $b_i\pm t_{\alpha/2,n-2}\times EE(b_i)$.
+
+```{r}
+car::Confint(mod1)
+```
+
+La primera columna es el coeficiente estimado por mínimos cuadrados (tal y como aparece al ejecutar `summary()`) y las columnas segunda y tercera se corresponden con los límites inferior y superior del intervalo de confianza, respectivamente. Así, el intervalo de confianza para la pendiente de la recta de regresión es $[0.0023;0.0035]$, aproximadamente.
+
+* Gráficos de los efectos:
+
+```{r}
+plot(effects::allEffects(mod1))
+```
+
+El único predictor del modelo parece que tiene una relación positiva con la variable de respuesta y gracias al contraste parcial sabemos que ésta es significativa.
+
+El modelo es globalmente útil ya que se explica aproximadamente en un $51\%$ la variabilidad del prestigio social percibido. Ahora bien, como se puede demostrar el modelo lineal no está bien especificado.
+
+```{r}
+plot(Prestigio[c('ingresos','prestigio')],pch=16)
+abline(mod1,col='green')
+```
+
+
+Se pueden obtener predicciones mediante el modelo: argumento `interval` (`confidence` o `prediction`)
+
+* Respuesta media:
+
+```{r}
+x<- with(Prestigio,seq(min(ingresos),max(ingresos),1))
+preds <- predict(mod1,newdata=list(ingresos=x),interval='confidence')
+
+plot(Prestigio[c('ingresos','prestigio')],pch=16,ylim=c(15,100))
+abline(mod1,col='green')
+
+lines(x, preds[,2], col="blue", lty=2)
+lines(x, preds[,3], col="blue", lty=2)
+```
+
+
+* Respuesta individual:
+
+```{r}
+x<- with(Prestigio,seq(min(ingresos),max(ingresos),1))
+preds <- predict(mod1,newdata=list(ingresos=x),interval='prediction')
+
+plot(Prestigio[c('ingresos','prestigio')],pch=16,ylim=c(15,100))
+abline(mod1,col='green')
+
+lines(x, preds[,2], col="blue", lty=2)
+lines(x, preds[,3], col="blue", lty=2)
+
+library(ggplot2)
+
+Prestigio |> 
+  ggplot(aes(x=ingresos,y=prestigio)) + 
+  geom_point(pch=16) +
+  geom_smooth(method='lm',formula=y~poly(x,2),color='red')
+  
+
+
+
+```
+
+
+* Algunas funciones extractoras aplicadas a `summary()` pueden ser de utilidad:
+
+```{r}
+# RMSE
+summary(mod1)$sigma
+
+# R2
+summary(mod1)$r.squared
+
+```
+
+
+# MODELO REGRESIÓN LINEAL MÚLTIPLE
+
+* Podemos incorporar más predictores en el modelo lineal, por ejemplo:
+
+$prestigio_i= \beta_0 + \beta_1ingresos_i +\beta_2porcentaje.mujeres_i+ \epsilon$
+
+
+```{r}
+mod2 <- lm(prestigio~ingresos+porc.mujeres,data=Prestigio)
+summary(mod2)
+```
+
+Los coeficientes se interpretan como efectos parciales (el cambio esperado en la respuesta al aumentar una unidad el predictor, manteniendo constantes todos los otros predictores).
+
+Podemos obtener intervalos de confianza para los coeficientes de este nuevo modelo:
+
+```{r}
+car::Confint(mod2)
+```
+
+Gráficos de los efectos del modelo 2:
+
+```{r}
+plot(effects::allEffects(mod2))
+```
+
+El modelo es globalmente útil ya que se explica aproximadamente en un $55\%$ la variabilidad del prestigio social percibido.
+
+* Podemos estimar betas estandarizadas (son comparables entre sí en el caso de los predictores) si previamente transformamos los predictores con la expresión $z_i=\frac{x_i-\bar x}{s_x}$:
+
+```{r}
+Zscores <- sapply(Prestigio[,c('prestigio','ingresos','porc.mujeres')],scale)
+colnames(Zscores) <- c('Z.prestigio','Z.ingresos','Z.mujeres')
+datosZ <- data.frame(Zscores)
+
+mod.Z <- lm(Z.prestigio ~ Z.ingresos + Z.mujeres, data=datosZ)
+summary(mod.Z)
+```
+* Regresión jerárquica: permite comparar modelos anidados, un modelo completo con $p$ predictores y un modelo reducido con $k$ predictores ($p>k$). Así se podrá tomar una decisión sobre $H_0:\beta_{k+1}=\beta_{k+2}=\dots=\beta_p$.
+
+
+```{r}
+anova(mod1,mod2)
+```
+
+El modelo completo (incluyendo ingresos y porcentaje de mujeres) reduce significativamente mejor la suma de residuos al cuadrado en comparación al modelo restringido, que incluye únicamente ingresos.
+
+* Se pueden incorporar predictores cualitativos mediante variables artificiales:
+
+```{r}
+mod3 <- lm(prestigio~ingresos+porc.mujeres+tipo,data=Prestigio)
+summary(mod3)
+```
+Dado que tenemos una predictor categórico, debe recordarse que el intercepto incorpora la predicción para la categoría de referencia (en este caso bc, blue collar). Y por tanto los coeficientes de las variables artificiales para prof y wc se interpretan como la diferencia de éstas respecto a la categoría de referencia.
+
+```{r fig.width=10,fig.height=10}
+plot(effects::allEffects(mod3))
+```
+
+
+* Tabla de sumas de cuadrados para el modelo lineal resultante, nos permite en el caso de que el predictor tenga más de un término asociado llevar a cabo un contraste global:
+
+```{r}
+car::Anova(mod3)
+```
+
+¿Podemos eliminar porc.mujeres del modelo? Regresión jerárquica:
+
+```{r}
+mod4 <- update(mod3,.~.-porc.mujeres)
+
+anova(mod4,mod3)
+```
+
+No hay diferencias significativas entre el modelo completo y el reducido por lo que escogeremos éste último (más parsimonioso).
+Nótese que el valor de probabilidad asociado al contraste F de la regresión jerárquica coincide con la del contraste parcial obtenido en el summary() de modelo 3.
+
+
+* Modelos no aditivos: en los que encontramos interacciones entre algunos regresores.
+
+```{r}
+mod5 <- lm(prestigio~tipo+ingresos*porc.mujeres,data=Prestigio)
+summary(mod5)
+```
+
+```{r fig.width=10,fig.height=10}
+plot(effects::allEffects(mod5))
+```
+
+Según este nuevo modelo, el efecto de ingresos sobre el prestigio percibido depende del porcentaje de mujeres en la profesión. Paralelamente, el efecto del porcentaje de mujeres también depende de cómo se combine con el nivel de ingresos.
+
+¿Realmente mejora el ajuste el término interactivo? Parece ser que no...
+
+```{r}
+ anova(mod4,mod5)
+```
+
+## MODELOS CON TIDYVERSE
+
+### Los paquetes `purrr` y `broom`
+
+Estos paquetes son de gran utilidad cuando se tienen que estimar una gran cantidad de modelos. Vamos a ilustrar su uso con los datos de `gapminder`.
+
+```{r}
+library(tidyverse)
+library(gapminder)
+library(broom)
+
+gapminder
+```
+
+¿Cómo cambia la esperanza de vida en cada país a través del tiempo?
+
+```{r}
+gapminder |> 
+  ggplot(aes(year, lifeExp, group =country)) +
+  geom_line(alpha = 1/3)
+```
+
+* Para ajustar un modelo en cada país podemos utilizar las funcionalidades del paquete `purrr`. Para ello, en primer lugar, necesitamos guardar los datos de forma anidada:
+
+```{r}
+by_country <- gapminder |>
+  group_by(country, continent) |> 
+  nest()
+
+by_country
+```
+
+&nbsp;
+
+* Nótese que en el anterior `tibble` llamado `by_country` tenemos una columna (`data`) correspondiente a una lista con 142 `tibbles`, conteniendo los grupos de observaciones anidados en paises.
+
+```{r}
+by_country$data[[1]]
+```
+
+&nbsp;
+
+* Ahora podemos ajustar un modelo lineal para cada país mediante `purrr::map()`:
+
+```{r}
+country_model <- function(df){
+  lm(lifeExp ~ year, data = df)
+}
+
+by_country <- by_country |> 
+  mutate(model = map(data, country_model))
+
+by_country
+```
+
+&nbsp;
+
+* Ahora podemos trabajar con estos modelos para analizar los residuales, el ajuste así como otros estadísticos de interés en la modelización (NOTA: la función add_residuals está en el paquete `modelr`):
+
+```{r}
+library(modelr)
+by_country <- by_country |>
+  mutate(
+    resids = map2(data, model, add_residuals)
+  )
+
+resids <- unnest(by_country, resids)
+
+resids |> 
+  ggplot(aes(year, resid)) +
+  geom_line(aes(group = country),alpha = 1 / 3) +
+  geom_smooth(se = FALSE) +
+  facet_wrap(~ continent)
+```
+
+
+```{r}
+glance <- by_country |> 
+  mutate(glance = map(model, broom::glance)) |> 
+  unnest(glance)
+
+glance
+```
+
+* ¿Qué 10 países ajustan peor al modelo estimado?
+
+```{r}
+glance |> 
+  arrange(r.squared) |> 
+  head(n = 10)
+```
+
+```{r}
+glance |> 
+  ggplot(aes(continent, r.squared)) +
+  geom_boxplot()
+```
+
+&nbsp;
+
+¿Cuál puede ser la razón de este mal ajuste?
+
+```{r}
+bad_fit <- filter(glance, r.squared < 0.25)
+
+gapminder |>
+  semi_join(bad_fit, by = "country") |> 
+  ggplot(aes(year, lifeExp, colour = country)) +
+  geom_line()
+  
+```
+
+&nbsp;
+
+# INTRODUCCIÓN A TIDYMODELS
+
+* Se supone que hemos instalado previamente el paquete `tidymodels`.
+
+![Tomado de Ruiz, 2019.](images/tidymodels.png)
+
+Podéis encontrar más información en:
+
+https://www.tidymodels.org/
+
+```{r}
+library(tidymodels)
+```
+
+
+## Predicción de uso de métodos anticonceptivos
+
+### 1) Carga e inspecciona la base de datos:
+
+```{r}
+library(tidyverse)
+
+# Carga csv y prepara factores
+contradat <- read_csv('data/Contraceptive.csv')
+
+contradat$age <- factor(contradat$age,levels=c('<25','25-29','30-39','40-49'))
+contradat$education <- factor(contradat$education,levels=c('low','high'))
+contradat$morechild <- factor(contradat$morechild,levels=c('no','yes'))
+contradat$cuse <- factor(car::recode(contradat$cuse,"0='no';1='yes'"),levels=c('no','yes'))
+
+contradat
+```
+
+
+### 2) ¿Cuál es la proporción de mujeres utilizando métodos anticonceptivos?
+
+```{r}
+library(kableExtra)
+usecontra <- contradat |> 
+  count(cuse) |> 
+  mutate(prop = n / nrow(contradat)) 
+
+usecontra |> 
+  kable()
+```
+
+### 3) Contracepción y edad:
+
+```{r}
+# Preparar los datos
+use_by_age <- contradat |> 
+    group_by(age) |>
+    summarise(prop_use = mean(as.numeric(cuse)-1)) |>
+    ungroup() |> 
+    mutate(type = fct_reorder(age, prop_use)) # Ordenar por edad y proporción
+
+use_by_age |> 
+    ggplot(aes(x = age, y = prop_use, fill = prop_use)) + 
+    geom_col() +
+    labs(title = "Contracepción y Edad") +
+    coord_flip() +
+    guides(fill = 'none')
+
+```
+
+### 4) Contracepción y educación:
+
+```{r}
+# Preparar los datos
+use_by_educ <- contradat |> 
+    group_by(education) |>
+    summarise(prop_use = mean(as.numeric(cuse)-1)) |>
+    ungroup() |> 
+    mutate(type = fct_reorder(education, prop_use)) # Ordenar por educación y proporción
+
+use_by_educ |> 
+    ggplot(aes(x = education, y = prop_use, fill = prop_use)) + 
+    geom_col() +
+    labs(title = "Contracepción y educación") +
+    coord_flip() +
+    guides(fill = 'none')
+
+```
+
+### 5) Contracepción y deseo de tener más hijos:
+
+```{r}
+# Preparar los datos
+use_by_morechild <- contradat |> 
+    group_by(morechild) |>
+    summarise(prop_use = mean(as.numeric(cuse)-1)) |>
+    ungroup() |> 
+    mutate(type = fct_reorder(morechild, prop_use)) # Ordenar por morechild y proporción
+
+use_by_morechild |> 
+    ggplot(aes(x = morechild, y = prop_use, fill = prop_use)) + 
+    geom_col() +
+    labs(title = "Contracepción y deseo de más hijos") +
+    coord_flip() +
+    guides(fill = 'none')
+
+```
+
+
+
+### 6) Creamos una partición training/test
+
+```{r}
+
+set.seed(123)
+splits <- initial_split(contradat, prop=4/5, strata = cuse)
+
+contradat_training <- training(splits)
+contradat_testing  <- testing(splits)
+
+contradat_training |> 
+  count(cuse) |> 
+  mutate(prop = n/sum(n))
+
+contradat_testing |> 
+  count(cuse) |> 
+  mutate(prop = n/sum(n))
+
+```
+
+### 7) Definimos y ajustamos el modelo
+
+```{r}
+fitted_logistic_model<- logistic_reg() |>
+        # Especificar motor
+        set_engine("glm") |>
+        # Especificar modo
+        set_mode("classification") |>
+        # Ajustar modelo
+        fit(cuse~., data = contradat_training)
+tidy(fitted_logistic_model) 
+```
+
+### 9) Reportamos coeficientes como OR y seleccionamos significativos:
+
+```{r}
+
+tidy(fitted_logistic_model, exponentiate = TRUE) |>
+  filter(p.value < 0.05)
+
+```
+
+### 10) Evaluamos el modelo en la muestra de test
+
+```{r}
+# Predicción de clase
+pred_class <- predict(fitted_logistic_model,
+                      new_data = contradat_testing,
+                      type = "class")
+
+# Predicción de la probabilidad de pertenencia a cada clase
+pred_proba <- predict(fitted_logistic_model,
+                      new_data = contradat_testing,
+                      type = "prob")
+
+cuse_resultados <- contradat_testing |>
+  select(cuse) |>
+  bind_cols(pred_class, pred_proba)
+
+cuse_resultados[sample(1:nrow(cuse_resultados),5), ]
+
+# Generamos un vector de métricas de rendimiento
+
+custom_metrics <- metric_set(accuracy, sens, spec, precision, recall, f_meas, kap, mcc)
+custom_metrics(cuse_resultados,
+               truth = cuse,
+               estimate = .pred_class)
+```
+
+
+```{r}
+roc_auc(cuse_resultados,
+        truth = cuse,
+        .pred_no)
+
+cuse_resultados |>
+  roc_curve(truth = cuse, .pred_no) |>
+  autoplot()
+```
+

@@ -1,0 +1,126 @@
+---
+title: "Ejemplo de documento dinámico"
+subtitle: "Primeros pasos con R Markdown"
+output: html_document
+date: "`r format(Sys.Date(), '%d %b, %Y')`"
+bibliography: mybib.bib
+csl: apa.csl
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Cabecera 1er nivel{.tabset}
+
+## Cabecera 2o nivel
+
+### Cabecera 3er nivel
+#### Cabecera 4o nivel
+##### Cabecera 5o nivel
+###### Cabecera 6o nivel
+
+*Texto en cursiva*
+
+_Texto en cursiva_
+
+**Texto en negrita**
+
+__Texto en negrita__
+
+* Item 1
+* Item 2
+    + Subitem 1
+    + Subitem 2
+        + Subsubitem 1
+        + Subsubitem 2
+        
+1. Item 1
+    + Subitem 1
+2. Item 2
+    + Subitem 1
+    + Subitem 2
+        + Subsubitem 1
+        + Subsubitem 2
+        
+        
+Columna 1   |  Columna 2
+------------|-----------
+Celda 11    |  Celda 12
+Celda 21    |  Celda 22
+
+
+## Integrando código y texto
+
+Un archivo de RMarkdown permite generar documentos dinámicos y reproducibles en distintos formatos (HTML, PDF, y MS Word) documents. Para más detalles ver <http://rmarkdown.rstudio.com>.
+
+Cuando clicas en el botón **Knit** se genera un documento que contiene todos los resultados de los análisis incluídos así como el código y el texto con formato. Se puede insertar código de R como sigue:
+
+```{r cars}
+summary(cars)
+```
+
+## Incluir gráficos creados internamente
+
+Se pueden incluir gráficos muy fácilmente:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Nota el uso de `echo = FALSE` para no imprimir el código utilizado para generar el gráfico.
+
+[Cabecera 1er nivel]
+
+![Logo de rmarkdown](rmarkdown.png)
+## Chunks de código
+
+```{r Ejemplo, echo=TRUE, fig.height=12, fig.width=12, message=FALSE, warning=FALSE,results=''}
+
+#CÓDIGO DE R
+
+```
+
+```{r}
+knitr::opts_chunk$set(echo=FALSE, fig.height=10, fig.width=10)
+```
+
+```{r eval=FALSE}
+library(tidyverse)
+for(K in unique(mpg$class)){
+rmarkdown::render(
+"fuel-economy.Rmd",output_file = paste0('Report',K,sep='_'),
+params = list(my_class = K)
+)
+}
+```
+
+
+## Fórmulas y enlaces en el texto
+
+$y_{ij}=\mu + \alpha_j + \epsilon_{ij}$
+
+\[ y_{ij}=\mu + \alpha_j + \epsilon_{ij} \]
+
+
+[Enlace del CRAN](https://cran.r-project.org/)
+
+## Referencias en el texto
+
+Para insertar una referencia debes combinar `@` con el ID de la referencia dentro de `[ ]`. Algunos ejemplos (ver archivo *mybib.bib*):
+
+- Separar múltiples referencias con un `;`: Se ha utilizado el software R y R-Commander [@fox2005; @rcore2020].
+
+- Puedes añadir comentarios dentro de corchetes: Has utilizado distintos paquetes [e. g. doBy: @doby2016; y ggplot2: @wickham2009].
+
+- Para poner los nombres de los autores fuera del paréntesis evita utilizar los corchetes: De acuerdo @wickham2009...
+
+- Añade `-` antes de la referencia para suprimir el nombre del autor: De acuerdo al manual del paquete *doBy* [-@doby2016]...
+
+Una vez has renderizado el archivo *.Rmd*, se incluirá una sección al final del documento con las referencias sin una cabecera de la sección de referencias. Por lo que puedes incluir algo como:
+
+<pre style="color:blue;font-size:130%"><code class="r"> # Referencias 
+</code></pre>
+
+# Referencias
+

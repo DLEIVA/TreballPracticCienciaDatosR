@@ -1,0 +1,74 @@
+\documentclass{beamer}
+
+\begin{document}
+
+\begin{frame}
+\frametitle{Contenidos}
+
+En esta presentación incluiremos:
+\begin{itemize}
+\item Una tabla
+\item Un gráfico
+\item Output insertado en texto
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Tablas}
+
+Insertar tablas en una slide es bastant sencillo. Podemos utilizar el entorno \texttt{table} o bien generar la tabla íntegramente en R
+
+\begin{table}[t]
+\caption{Ejemplo de una tabla sencilla.}
+\begin{tabular}{l | c c}
+\hline
+\bf{Observación} & \bf{Var1} & \bf{Var2} \\
+\hline
+Individuo 1 & a & b \\
+Individuo 2 & c & d \\
+\hline
+\end{tabular}
+\end{table}
+
+<<echo=FALSE,results='asis'>>=
+print(xtable::xtable(summary(iris['Sepal.Length']),caption = 'Tabla generada con R'),include.rownames=FALSE)
+@
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Gráficos}
+
+Insertar gráficos generados en R se puede hacer en combinación con el entorno \texttt{figure}:
+
+\begin{figure}
+\caption{Ejemplo de gráfico sencillo.}
+<<echo=FALSE,message=FALSE,warning=FALSE,out.width="0.8\\textwidth",out.height="0.6\\textheight">>=
+library(tidyverse)
+data(mpg)
+mpg %>% ggplot(aes(cyl,displ)) +
+  geom_point() +
+  geom_smooth() +
+  theme_minimal()
+@
+\end{figure}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Gráficos}
+
+Se han analizado un total de \Sexpr{nrow(mpg)} observaciones:
+
+<< message=FALSE,warning=FALSE,out.width="0.7\\textwidth",out.height="0.5\\textheight",fig.cap='Ejemplo de gráfico sencillo'>>=
+mpg %>% ggplot(aes(cyl,displ)) +
+  geom_point() +
+  geom_smooth() +
+  theme_minimal()
+@
+
+
+\end{frame}
+
+\end{document}

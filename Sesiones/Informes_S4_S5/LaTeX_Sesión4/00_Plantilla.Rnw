@@ -1,0 +1,4 @@
+
+\subsection{Análisis descriptivo para las variables \Sexpr{str_replace(variables[i],' ',' y ')}}
+
+

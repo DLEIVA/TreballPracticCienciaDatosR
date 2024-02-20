@@ -1,0 +1,155 @@
+\documentclass{article}
+\usepackage{blindtext}
+\usepackage{multicol}
+\usepackage{amsmath}
+
+\usepackage[spanish]{babel}
+\usepackage[T1]{fontenc}
+
+\usepackage{geometry}
+ \geometry{
+ a4paper,
+ total={170mm,257mm},
+ left=20mm,
+ top=20mm,
+ }
+ 
+\renewcommand{\refname}{Referencias}
+
+\renewcommand{\tablename}{Tabla}
+
+\title{Ejemplo}
+\author{David Leiva Ueña}
+\date{\Sexpr{Sys.Date()}}
+
+\begin{document}
+\maketitle
+
+\section*{Primeros pasos}
+
+\begin{itemize}
+\item Instalar knitr si fuese necesario
+\item Instalar una distribución de LaTeX: tinytex
+\item Instalar paquetes de Latex mediante tinytex
+\end{itemize}
+
+
+<<>>=
+  library(tinytex)
+@
+
+<<eval=FALSE>>=
+tinytex::tlmgr_install('blindtext')
+@
+
+
+
+\begin{multicols}{2}
+[
+\section{Texto con formato}
+Algún texto aleatorio...
+]
+\noindent \underline{Cursiva}\\  \emph{\blindtext}  \\ \underline{Typewritter} \\ \texttt{\blindtext}
+\end{multicols}
+\begin{multicols}{2}
+[
+\subsection{Tamaño de fuente}
+Modificando tamaño de fuente con palabras reservadas en \LaTeX
+]
+{\Huge \blindtext}  {\scriptsize \blindtext}
+\end{multicols}
+
+\subsection{Fórmulas}
+
+Podemos insertar fórmulas dentro de un texto como por ejemplo \( \bar x = \sum_i^n\frac{x_i}{n}\)\\
+
+
+\begin{eqnarray*}
+\int_{-2}^{1}2x\,dx &=& \lim_{||\Delta||\to 0} \sum_{i=1}^{n}f(c_i)\Delta x_i = \lim_{n\to \infty}\sum_{i=1}^{n}f(c_i)\Delta x_i \\
+&=& \lim_{n \to \infty} \sum_{i=1}^n 2\left(-2 + \frac{3i}{n}\right)\left(\frac{3}{n}\right) = \lim_{n \to \infty} \frac{6}{n}\sum_{i=1}^n \left(-2 + \frac{3i}{n}\right)\\
+&=& \lim_{n\to \infty}\frac{6}{n}\left(-2\sum_{i=1}^n 1+\frac{3}{n}\sum_{i=1}^n i\right) = \lim_{n\to \infty} \frac{6}{n}\left[-2n + \frac{3}{n}\left(\frac{n(n+1)}{2}\right)\right]\\ 
+&=& \lim_{n\to \infty} \left(-12+9 +\frac{9}{n} \right) = -3
+\end{eqnarray*}
+
+\begin{eqnarray}\label{eq1}
+\setlength{\arraycolsep}{0pt}
+\int_{-2}^{1}2x\,dx &=& \lim_{||\Delta||\to 0} \sum_{i=1}^{n}f(c_i)\Delta x_i = \lim_{n\to \infty}\sum_{i=1}^{n}f(c_i)\Delta x_i \\
+&=& \lim_{n \to \infty} \sum_{i=1}^n 2\left(-2 + \frac{3i}{n}\right)\left(\frac{3}{n}\right) = \lim_{n \to \infty} \frac{6}{n}\sum_{i=1}^n \left(-2 + \frac{3i}{n}\right) \notag\\
+&=& \lim_{n\to \infty}\frac{6}{n}\left(-2\sum_{i=1}^n 1+\frac{3}{n}\sum_{i=1}^n i\right) = \lim_{n\to \infty} \frac{6}{n}\left[-2n + \frac{3}{n}\left(\frac{n(n+1)}{2}\right)\right]\notag \\ 
+&=& \lim_{n\to \infty} \left(-12+9 +\frac{9}{n} \right) = -3 \notag
+\end{eqnarray}
+
+
+\section{Listas}
+
+\subsection{Listas mediante \emph{itemize}}
+
+\begin{itemize}
+\item Primer elemento de la lista
+\item Segundo elemento de la lista
+\item ...
+\end{itemize}
+
+
+\subsection{Listas ordenadas mediante \emph{enumerate}}
+
+\begin{enumerate}
+\item Primer elemento de la lista
+\item Segundo elemento de la lista
+\item ...
+\end{enumerate}
+
+\section{Tablas en LaTeX}
+
+\subsection{Tablas generadas desde LaTex}
+
+\begin{table}[h!]
+\caption{Este es un ejemplo de una tabla simple en Latex.}
+
+\begin{tabular}{l | c c}
+\hline
+\bf{Observación} & \bf{Var1} & \bf{Var2} \\
+\hline
+Individuo 1 & a & b \\
+Individuo 2 & c & d \\
+Individuo 3 & e & f \\
+Individuo 4 & g & h \\
+\hline
+\end{tabular}
+
+\end{table}
+
+\subsection{Tablas generadas desde R}
+
+
+<<results='asis'>>=
+data(iris)
+mod <- lm(Sepal.Width~.,data=iris)
+xtable::xtable(summary(mod))
+@
+
+\section{Chunks y código en texto}
+
+Definir globalmente opciones de los chunks
+
+<<>>=
+knitr::opts_chunk$set(echo=FALSE, fig.height=10, fig.width=10)
+@
+
+La base de datos \texttt{iris} tiene \emph{\Sexpr{nrow(iris)}} observaciones.
+
+\section{Compilación desde distintos archivos}
+
+
+Tenemos un archivo \emph{main.Rnw} que al ejecutarse lleva a cabo la compilación utilizando otros archivos asociados (00_Plantilla.Rnw y 01_Plantilla.Rnw).
+
+
+Para compilar el archivo se puede utilizar la función \texttt{knit2pdf()}:
+
+<<eval=FALSE>>=
+knitr::knit2pdf('main.Rnw')
+@
+
+
+
+\end{document}

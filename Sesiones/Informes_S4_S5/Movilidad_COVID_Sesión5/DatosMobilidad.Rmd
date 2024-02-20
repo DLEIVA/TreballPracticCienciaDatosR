@@ -1,0 +1,149 @@
+---
+title: "Introducción a R Markdown"
+author: "David Leiva"
+date: "2023-07-16"
+output: 
+  html_document:
+    toc: true
+    number_sections: true
+    toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,warning = FALSE, message = FALSE, fig.width=8,
+                      fig.height=8)
+```
+
+# Paquetes
+
+```{r}
+library(tidyverse)
+library(knitr)
+library(kableExtra)
+library(lorem)
+```
+
+
+# Carga de datos
+
+```{r}
+datos <- read_csv(file='https://raw.githubusercontent.com/deepstartup/COVID-19-Community-Mobility-Dataset/master/world_mobility_with_covid_infection_count.csv')
+```
+
+
+# Texto con formato
+
+Podemos añadir texto en *cursiva* o bien en __negrita__.
+
+También se puede enlazar a otras secciones por ejemplo, a la sección  [Paquetes].
+
+Podemos añadir listas sencillas como la siguiente:
+
+1. Ver cómo funciona R Markdown
+2. Practicar un poco con R Markdown
+3. Ver otras herramientas de ciencia de datos reproducible.
+
+
+# Tablas en R Markdown
+
+```{r}
+datos |> group_by(COUNTRY_REGION) |> summarise(Mean=mean(PARKS_PCT),SD=sd(PARKS_PCT),
+                                                 Min=min(PARKS_PCT),Max=max(PARKS_PCT),
+            .groups = 'drop') |>
+  as.data.frame() |> kable() |> kable_styling("striped")
+```
+
+
+# Figuras
+
+Podemos cargar figuras desde un archivo local o bien incluyendo la dirección URL
+
+![Fuente: memegenerator.net](https://img.memegenerator.net/images/7737583.jpg)
+
+También podemos generar figuras desde R y añadirlas al documento:
+
+```{r}
+vars <- paste0(c('RETAIL_AND_RECREATION','GROCERY_AND_PHARMACY','PARKS','TRANSIT_STATIONS','WORKPLACES','RESIDENTIAL'),'_PCT')
+
+datos.m <- datos |> 
+  group_by(DAY_CT) |> 
+  summarise(across(vars, mean))
+
+df <- datos.m |>
+  select(DAY_CT, RETAIL_AND_RECREATION_PCT:RESIDENTIAL_PCT) |>
+  gather(key = "variable", value = "Porcentaje", -DAY_CT)
+
+ggplot(df, aes(x = DAY_CT, y = Porcentaje)) + 
+  geom_line(aes(color = variable, linetype = variable)) +
+  theme_minimal()
+```
+
+# Fórmulas con $\LaTeX$ y enlaces
+
+\[ \begin{pmatrix}
+y_1 \\ y_2 \\ \vdots \\ y_n
+\end{pmatrix} = 
+\begin{pmatrix} 
+1 & x_1\\
+1 & x_2\\
+\vdots & \vdots\\
+1 & x_n
+\end{pmatrix}
+\begin{pmatrix} 
+\beta_0\\
+\beta_1
+\end{pmatrix}
+\begin{pmatrix}
+e_1 \\ e_2 \\ \vdots \\ e_n
+\end{pmatrix}
+\]
+
+Para más información sobre fórmulas y símbolos en $\LaTeX$ se puede consultar el siguiente [enlace](https://en.wikibooks.org/wiki/LaTeX/Mathematics).
+
+
+# Chunks
+
+¿Qué implican las siguientes cabeceras?:
+
+```{r echo=FALSE}
+datos |> group_by(COUNTRY_REGION) |> summarise(Mean=mean(PARKS_PCT),SD=sd(PARKS_PCT),
+                                                 Min=min(PARKS_PCT),Max=max(PARKS_PCT),
+            .groups = 'drop') |>
+  as.data.frame() |> head() |>  kable() |> kable_styling("striped")
+```
+
+```{r eval=FALSE}
+datos |> group_by(COUNTRY_REGION) |> summarise(Mean=mean(PARKS_PCT),SD=sd(PARKS_PCT),
+                                                 Min=min(PARKS_PCT),Max=max(PARKS_PCT),
+            .groups = 'drop') |>
+  as.data.frame() |> head() |>  kable() |> kable_styling("striped")
+```
+
+```{r results='markup'}
+datos |> group_by(COUNTRY_REGION) |> summarise(Mean=mean(PARKS_PCT),SD=sd(PARKS_PCT),
+                                                 Min=min(PARKS_PCT),Max=max(PARKS_PCT),
+            .groups = 'drop') |>
+  as.data.frame() |> head() |>  xtable::xtable() |> print(,type='html')
+```
+
+
+# Output de R insertado en texto
+
+El siguiente código va a insertar **`r set.seed(123); rn <- sample(1:5,1); rn`** párrafos con palabras en latín al azar:
+
+`r lorem::ipsum(paragraphs = rn)`
+
+# Compilación con parámetros
+
+```{r eval=FALSE}
+for(C in unique(datos$COUNTRY_REGION)[1:5]){
+  rmarkdown::render(
+    'InformeMovilidad.Rmd',output_file = paste0('Informe_Movilidad',C,sep='_'),
+    params = list(c_count = C)
+  )
+}
+```
+
+
+
+
