@@ -59,7 +59,7 @@ Si la versión instalada de R es < 4.2.0, necesitarás actualizar el programa pr
 * [MacOS X](https://cran.r-project.org/bin/macosx/)
 * [Linux](https://cran.r-project.org/bin/linux/)
 
-A lo largo de las sesiones vamos a utilizar diversos paquetes de R que necesitarás tener instalados. Antes del inicio del taller, ejecuta el siguiente código que actualizará los paquetes instalados e instalará los paquetes necesarios durante el taller:
+A lo largo de las sesiones vamos a utilizar diversos paquetes de R que necesitarás tener instalados. Antes del inicio del curso, ejecuta el siguiente código que actualizará los paquetes instalados e instalará los paquetes necesarios durante el curso:
 
 ```r
 # Actualiza paquetes
@@ -72,7 +72,7 @@ pkgs <- c("tidyverse", "readxl", "haven", "usethis", "learnr", "kableExtra", "ma
 install.packages(pkgs, Ncpus = 4) # especifica Ncpus según nº CPUs disponibles en tu ordenador
 ```
 
-*Conviene trabajar previamente estos 2 recursos para un buen aprovechamiento del taller.*
+*Conviene trabajar previamente estos 2 recursos para un buen aprovechamiento de las sesiones.*
 
 [Instalación de R y RStudio](https://learnr-examples.shinyapps.io/ex-setup-r/)
 
@@ -82,7 +82,7 @@ install.packages(pkgs, Ncpus = 4) # especifica Ncpus según nº CPUs disponibles
 
 ## Desde Github
 
-Para descargar los materiales del taller puedes abrir RStudio y ejecutar `use_course()` tal y como se muestra a continuación:
+Para descargar los materiales del curso puedes abrir RStudio y ejecutar `use_course()` tal y como se muestra a continuación:
 
 ```r
 usethis::use_course("DLEIVA/TreballPracticCienciaDatosR")
@@ -92,7 +92,7 @@ Una vez ejecutada la instrucción se os preguntará si queréis descargar los ma
 
 Tras la extracción, se os preguntará si queréis eliminar el archivo `.zip` descargado. Seleccionad la opción que creáis oportuna.
 
-Finalmente, tras responsder a esta cuestión, Rstudio cargará el proyecto del taller en una nueva sesión de RStudio. Una vez abierto el proyecto, podeís cerrar la otra ventana de RStudio (en la que habéis ejecutado la instrucción `use_course()`).
+Finalmente, tras responder a esta cuestión, Rstudio cargará el proyecto del taller en una nueva sesión de RStudio. Una vez abierto el proyecto, podéis cerrar la otra ventana de RStudio (en la que habéis ejecutado la instrucción `use_course()`).
 
 ### Descarga directa
 
