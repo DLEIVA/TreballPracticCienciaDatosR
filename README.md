@@ -6,7 +6,7 @@
 
 ### David Leiva Ureña
 
-#### Departmento Psicología Social y Psicología Cuantitativa, Universidad de Barcelona
+#### Departamento Psicología Social y Psicología Cuantitativa, Universidad de Barcelona
 
 ---
 
