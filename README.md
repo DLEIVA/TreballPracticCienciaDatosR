@@ -2,7 +2,7 @@
 
 ## Treball pràctic Grado Psicología
 
-### Febrero, 2024
+### Octubre, 2024
 
 ### David Leiva Ureña
 
