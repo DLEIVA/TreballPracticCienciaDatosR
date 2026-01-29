@@ -2,7 +2,7 @@
 
 ## Treball pràctic Grado Psicología
 
-### Octubre, 2024
+### Enero, 2026
 
 ### David Leiva Ureña
 
@@ -39,11 +39,11 @@ Este curso se ha pensado como una suerte de taller de tipo práctico en el que s
 
 ## Sobre el instructor
 
-Me llamo David Leiva y soy profesor Agregado (Contratado Doctor) en el Departamento de Psicología Social y Psicología Cuantitativa. Imparto cursos de grado, máster y doctorado en Estadística, Técnicas de Investigación, Modelización Estadística, Ciencia de Datos y Matemáticas Aplicadas. Mis principales intereses de investigación son el análisis de datos diádicos, la modelización y el software estadístico. También he participado en numerosos trabajos en campos como la Psicología de las Organizaciones, la Neuropsicología, la Psicogerontología o la Biología, entre otros. Puedes encontrar mi CV en el siguiente [enlace](https://github.com/DLEIVA/CV/blob/main/CV_DLU_2023.pdf).
+Me llamo David Leiva y soy profesor Agregado (Contratado Doctor) en el Departamento de Psicología Social y Psicología Cuantitativa. Imparto cursos de grado, máster y doctorado en Estadística, Técnicas de Investigación, Modelización Estadística, Ciencia de Datos y Matemáticas Aplicadas. Mis principales intereses de investigación son el análisis de datos diádicos, la modelización y el software estadístico. También he participado en numerosos trabajos en campos como la Psicología de las Organizaciones, la Neuropsicología, la Psicogerontología o la Biología, entre otros. Puedes encontrar mi CV en el siguiente [enlace](https://github.com/DLEIVA/CV/blob/main/CV_DLU_2025.pdf).
 
 ## Preparación previa
 
-Por favor, asegúrate que tienes al menos la versión 4.2 de R instalada &mdash; *y preferiblemente la versión 4.3* &mdash; (pues dependiendo de los paquetes que se utilicen requieren versiones actualizadas del software). Nótese que R y RStudio son dos programas distintos: no es suficiente tener actualizada la versión de RStudio pues R se va actualizando independientemente de forma periódica.
+Por favor, asegúrate que tienes al menos la versión 4.3 de R instalada &mdash; *y preferiblemente la versión 4.3* &mdash; (pues dependiendo de los paquetes que se utilicen requieren versiones actualizadas del software). Nótese que R y RStudio son dos programas distintos: no es suficiente tener actualizada la versión de RStudio pues R se va actualizando independientemente de forma periódica.
 
 Para comprobar la versión de R instalada, puedes ejecutar
 
@@ -53,7 +53,7 @@ version
 
 en R y leer en el apartado `version.string` (o las secciones `major` y `minor`).
 
-Si la versión instalada de R es < 4.2.0, necesitarás actualizar el programa previa descarga e instalación. Para descargar R ve a la página [CRAN Download](https://cran.r-project.org/) y selececciona el enlace apropiado según tu sistema operativo:
+Si la versión instalada de R es < 4.3.0, necesitarás actualizar el programa previa descarga e instalación. Para descargar R ve a la página [CRAN Download](https://cran.r-project.org/) y selececciona el enlace apropiado según tu sistema operativo:
 
 * [Windows](https://cran.r-project.org/bin/windows/)
 * [MacOS X](https://cran.r-project.org/bin/macosx/)
